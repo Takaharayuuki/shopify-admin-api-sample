@@ -1,57 +1,47 @@
-<script setup lang="ts">
-const nuxtApp = useNuxtApp();
-const route = useRoute();
-
-const product = await nuxtApp.$shopify.product.fetch(route.params.id);
-</script>
 <template>
   <NuxtLayout>
     <NuxtLink to="/products"> products </NuxtLink>
-    <ul v-for="(key, keyI) in Object.keys(product)" :key="`key-${keyI}`">
-      <li v-if="key === 'images'">
-        {{ key }}:
-        <ol>
-          <li
-            v-for="(image, imageI) in product['images']"
-            :key="`image-${imageI}`"
-          >
-            <ul
-              v-for="(imageKey, imageKeyI) in Object.keys(image)"
-              :key="`imageKey-${imageKeyI}`"
-            >
-              <li>
-                {{ imageKey }}:
-                {{ image[imageKey] }}
-              </li>
-            </ul>
-          </li>
-        </ol>
-      </li>
 
-      <li v-else-if="key === 'variants'">
-        {{ key }}:
-        <ol>
-          <li
-            v-for="(variant, variantI) in product['variants']"
-            :key="`variant-${variantI}`"
-          >
-            <ul
-              v-for="(variantKey, variantKeyI) in Object.keys(variant)"
-              :key="`variantKey-${variantKeyI}`"
-            >
-              <li>
-                {{ variantKey }}:
-                {{ variant[variantKey] }}
-              </li>
-            </ul>
-          </li>
-        </ol>
-      </li>
+    <template v-if="product">
+      <ul>
+        <li>
+          {{ product.title }}
+          {{ product.variants[0].price }}円
 
-      <li v-else>
-        {{ key }}:
-        {{ product[key] }}
-      </li>
-    </ul>
+          <ul>
+            <li>ID: {{ product.id }}</li>
+            <li
+              v-for="(image, imageI) in product.images"
+              :key="`image-${imageI}`"
+              :style="{ display: 'inline-block', marginRight: '.5rem' }"
+            >
+              <img
+                :src="image.src"
+                :alt="`${product.title}-${imageI}`"
+                :width="image.width / 20"
+                :height="image.height / 20"
+              />
+            </li>
+
+            <li v-html="product.descriptionHtml" />
+          </ul>
+        </li>
+      </ul>
+    </template>
+
+    <template v-else>
+      <p>商品は見つかりませんでした。</p>
+    </template>
   </NuxtLayout>
 </template>
+
+<script setup lang="ts">
+const route = useRoute();
+/**
+ * $fetch options params
+ * Doc: https://github.com/unjs/ohmyfetch#%EF%B8%8F-adding-params
+ */
+const { data: product } = await useFetch("/api/shopify/get-product", {
+  params: route.params,
+});
+</script>

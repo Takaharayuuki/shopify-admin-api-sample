@@ -1,15 +1,5 @@
 <script setup lang="ts">
-/* 
-    useNuxtApp(): nuxt context(this)へのアクセス
-    Nuxt2でinjectされた$appにアクセス可能
-    参考: https://blog.logrocket.com/whats-new-nuxt-3/
-  */
-const nuxtApp = useNuxtApp();
-console.log(nuxtApp);
-
-// fetchAll()はPromiseが返ってくるためawaitを付け、戻り値を取得する
-const products = await nuxtApp.$shopify.product.fetchAll();
-console.log(products);
+const { data: products } = await useFetch("/api/shopify/get-products");
 </script>
 <template>
   <NuxtLayout>

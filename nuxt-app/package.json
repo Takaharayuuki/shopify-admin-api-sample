@@ -4,9 +4,12 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "netlify": "netlify",
+    "netlify:deploy": "netlify deploy --build --prod --open"
   },
   "devDependencies": {
+    "netlify-cli": "^10.7.1",
     "nuxt": "3.0.0-rc.4"
   },
   "dependencies": {
